@@ -328,12 +328,61 @@
             font-size: 0.9em;
         }
 
-        .start-screen, .game-screen, .complete-screen {
+        .start-screen, .game-screen, .complete-screen, .help-screen {
             display: none;
         }
 
-        .start-screen.active, .game-screen.active, .complete-screen.active {
+        .start-screen.active, .game-screen.active, .complete-screen.active, .help-screen.active {
             display: block;
+        }
+
+        .help-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .help-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .help-content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            line-height: 1.8;
+        }
+
+        .help-content h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+
+        .help-content p {
+            margin-bottom: 15px;
+            color: #2d3436;
+        }
+
+        .help-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .help-content li {
+            margin-bottom: 8px;
+            color: #2d3436;
         }
 
         .achievement {
@@ -368,6 +417,9 @@
 </head>
 <body>
     <div class="container">
+        <!-- Hilfe-Button (erscheint auf allen Screens) -->
+        <button class="help-button" onclick="toggleHelp()">❓ Hilfe</button>
+
         <!-- Start Screen -->
         <div class="start-screen active">
             <div class="header">
@@ -503,9 +555,101 @@
                 </button>
             </div>
         </div>
+
+        <!-- Help Screen -->
+        <div class="help-screen">
+            <div class="header">
+                <h1>❓ Hilfe & Anleitung</h1>
+            </div>
+
+            <div class="help-content">
+                <h3>📚 So funktioniert das Lernprogramm</h3>
+                
+                <h3>🎯 Start und Themenauswahl</h3>
+                <p>Auf der Startseite kannst du zwischen drei spannenden Themenbereichen wählen:</p>
+                <ul>
+                    <li><strong>Thema 1:</strong> Wer hat wie viel? (7 Aufgaben)</li>
+                    <li><strong>Thema 2:</strong> Geschwindigkeit & Zeit (7 Aufgaben)</li>
+                    <li><strong>Thema 3:</strong> Treffpunkte & Wege (6 Aufgaben)</li>
+                </ul>
+
+                <h3>✏️ Aufgaben lösen</h3>
+                <p>Lies die Aufgabe genau durch und tippe deine Antwort in das große Eingabefeld. Klicke dann auf "Antwort prüfen" oder drücke die Enter-Taste.</p>
+                <p>Bei richtiger Antwort bekommst du Punkte und kommst automatisch zur nächsten Aufgabe. Bei falscher Antwort kannst du es einfach noch einmal versuchen!</p>
+
+                <h3>💡 Hilfen nutzen</h3>
+                <p><strong>Tipp-Button (gelb):</strong> Zeigt dir nacheinander zwei hilfreiche Hinweise, die dich zum Lösungsweg führen.</p>
+                <p><strong>Lösung zeigen (rot):</strong> Zeigt dir den kompletten Rechenweg, wenn du gar nicht weiterkommst.</p>
+                <p><em>Tipp:</em> Versuche zuerst die Aufgabe alleine zu lösen, dann mit den Tipps. Die Lösung solltest du nur als letzte Hilfe nutzen!</p>
+
+                <h3>⭐ Punkte sammeln</h3>
+                <p>So bekommst du Punkte:</p>
+                <ul>
+                    <li><strong>10 Punkte:</strong> Für jede richtige Antwort</li>
+                    <li><strong>+5 Punkte Bonus:</strong> Wenn du keine Tipps brauchst</li>
+                    <li><strong>+5 Punkte Bonus:</strong> Wenn du die Lösung nicht anschaust</li>
+                    <li><strong>Maximum:</strong> 20 Punkte pro Aufgabe!</li>
+                </ul>
+
+                <h3>🏆 Levels erreichen</h3>
+                <p>Für je 100 Punkte steigst du ein Level auf! Dein Level und deine Punkte werden automatisch gespeichert, auch wenn du das Programm schließt.</p>
+
+                <h3>🎖️ Erfolge freischalten</h3>
+                <p>Wenn du ein Thema abschließt, siehst du deine Erfolge:</p>
+                <ul>
+                    <li>Bis zu 3 Sterne je nach Leistung</li>
+                    <li>Besondere Auszeichnungen bei perfekter Lösung</li>
+                    <li>Level-Up Belohnungen</li>
+                </ul>
+
+                <h3>💻 Technische Hinweise</h3>
+                <p>Das Programm läuft direkt in deinem Browser. Du brauchst nichts zu installieren. Alle deine Punkte und Levels werden automatisch gespeichert.</p>
+                <p>Du kannst Zahlen mit Komma (3,5) oder Punkt (3.5) eingeben - beides funktioniert!</p>
+
+                <h3>🎓 Lerntipps</h3>
+                <ul>
+                    <li>Lies die Aufgabe zweimal, bevor du anfängst zu rechnen</li>
+                    <li>Nutze Zettel und Stift für Nebenrechnungen</li>
+                    <li>Die Tipps helfen dir, selbst auf die Lösung zu kommen</li>
+                    <li>Mach Pausen zwischen den Themen</li>
+                    <li>Du kannst jedes Thema so oft wiederholen, wie du möchtest</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="closeHelp()" style="max-width: 300px;">
+                    ✓ Verstanden, los geht's!
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
+        let previousScreen = 'start-screen';
+
+        // Hilfe ein/ausblenden
+        function toggleHelp() {
+            const helpScreen = document.querySelector('.help-screen');
+            const activeScreen = document.querySelector('.start-screen.active, .game-screen.active, .complete-screen.active');
+            
+            if (helpScreen.classList.contains('active')) {
+                closeHelp();
+            } else {
+                if (activeScreen) {
+                    previousScreen = activeScreen.className.split(' ')[0];
+                    activeScreen.classList.remove('active');
+                }
+                helpScreen.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function closeHelp() {
+            document.querySelector('.help-screen').classList.remove('active');
+            document.querySelector('.' + previousScreen).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
         // Aufgaben-Datenbank
         const tasks = {
             1: [ // Themenbereich 1: Sachaufgaben
