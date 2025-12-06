@@ -79,25 +79,67 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #e0e0e0;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 20px 0;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
-            transition: width 0.5s ease;
+        .task-navigation {
             display: flex;
+            gap: 10px;
             align-items: center;
             justify-content: center;
-            color: white;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .task-nav-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid #dfe6e9;
+            background: white;
+            color: #636e72;
             font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .task-nav-button:hover {
+            transform: scale(1.1);
+            border-color: #74b9ff;
+        }
+
+        .task-nav-button.active {
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            color: white;
+            border-color: #a29bfe;
+            transform: scale(1.15);
+        }
+
+        .task-nav-button.completed {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-color: #00b894;
+        }
+
+        .nav-arrow {
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-arrow:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
         }
 
         .task-card {
@@ -173,14 +215,65 @@
             color: white;
         }
 
-        .btn-hint {
-            background: linear-gradient(135deg, #fdcb6e 0%, #ffeaa7 100%);
-            color: #2d3436;
-        }
-
         .btn-solution {
             background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
             color: white;
+        }
+
+        .hint-system {
+            margin: 20px 0;
+        }
+
+        .hint-bubbles {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .hint-bubble {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .hint-bubble:hover:not(.used):not(.locked) {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .hint-bubble.used {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border: 3px solid #fdcb6e;
+        }
+
+        .hint-bubble.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hint-bubble-icon {
+            font-size: 2em;
+        }
+
+        .hint-bubble-label {
+            font-size: 0.8em;
+            color: white;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .hint-bubble.used .hint-bubble-label {
+            color: #2d3436;
         }
 
         .hint-box {
@@ -255,45 +348,6 @@
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
-        }
-
-        .celebration {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
-            text-align: center;
-            display: none;
-            z-index: 1000;
-        }
-
-        .celebration.show {
-            display: block;
-            animation: zoomIn 0.5s ease;
-        }
-
-        @keyframes zoomIn {
-            from {
-                transform: translate(-50%, -50%) scale(0);
-            }
-            to {
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        .celebration h2 {
-            color: #764ba2;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        .stars {
-            font-size: 3em;
-            margin: 20px 0;
         }
 
         .menu {
@@ -417,7 +471,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Hilfe-Button (erscheint auf allen Screens) -->
         <button class="help-button" onclick="toggleHelp()">❓ Hilfe</button>
 
         <!-- Start Screen -->
@@ -429,10 +482,8 @@
                 </p>
             </div>
 
-            <div style="text-align: center; margin: 30px 0;">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='%23764ba2'/%3E%3Ccircle cx='80' cy='85' r='10' fill='white'/%3E%3Ccircle cx='120' cy='85' r='10' fill='white'/%3E%3Cpath d='M 70 120 Q 100 140 130 120' stroke='white' stroke-width='5' fill='none'/%3E%3C/svg%3E" 
-                     alt="Smiley" 
-                     style="width: 150px; height: 150px;">
+            <div style="text-align: center; margin: 30px 0; font-size: 120px; line-height: 1;">
+                😊
             </div>
 
             <div class="menu">
@@ -468,16 +519,12 @@
                     <div class="stat-value">✓ <span id="correct">0</span></div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">Aufgabe</div>
-                    <div class="stat-value"><span id="current-task">1</span>/<span id="total-tasks">7</span></div>
+                    <div class="stat-label">Thema</div>
+                    <div class="stat-value"><span id="category-name">1</span></div>
                 </div>
             </div>
 
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress">
-                    <span id="progress-text">0%</span>
-                </div>
-            </div>
+            <div class="task-navigation" id="task-navigation"></div>
 
             <div class="task-card">
                 <span class="task-number">Aufgabe <span id="task-number">1</span></span>
@@ -491,24 +538,20 @@
                            onkeypress="if(event.key === 'Enter') checkAnswer()">
                 </div>
 
-                <div class="button-group">
-                    <button class="btn btn-primary" onclick="checkAnswer()">
-                        ✓ Antwort prüfen
-                    </button>
-                    <button class="btn btn-hint" onclick="showHint()">
-                        💡 Tipp <span id="hint-count">(2)</span>
-                    </button>
-                </div>
-
-                <div class="hint-box" id="hint-box"></div>
+                <button class="btn btn-primary" onclick="checkAnswer()" style="width: 100%; margin: 15px 0;">
+                    ✓ Antwort prüfen
+                </button>
 
                 <div class="feedback" id="feedback"></div>
 
-                <div class="button-group" style="margin-top: 10px;">
-                    <button class="btn btn-solution" onclick="showSolution()" id="solution-btn">
-                        🔍 Lösung zeigen
-                    </button>
+                <div class="hint-system">
+                    <div class="hint-bubbles" id="hint-bubbles"></div>
+                    <div class="hint-box" id="hint-box"></div>
                 </div>
+
+                <button class="btn btn-solution" onclick="showSolution()" id="solution-btn" style="width: 100%; margin: 15px 0;">
+                    🔍 Lösung zeigen
+                </button>
 
                 <div class="solution-box" id="solution-box"></div>
             </div>
@@ -526,7 +569,7 @@
                 <h1>🎉 Geschafft! 🎉</h1>
             </div>
 
-            <div class="stars" id="final-stars">⭐⭐⭐</div>
+            <div style="text-align: center; font-size: 4em; margin: 20px 0;" id="final-stars">⭐⭐⭐</div>
 
             <h2 style="text-align: center; color: #764ba2; margin: 20px 0;">
                 Super gemacht, Matilda!
@@ -573,14 +616,27 @@
                     <li><strong>Thema 3:</strong> Treffpunkte & Wege (6 Aufgaben)</li>
                 </ul>
 
+                <h3>🔢 Zwischen Aufgaben springen</h3>
+                <p>Über den Aufgaben siehst du kleine runde Buttons mit Nummern. Damit kannst du zu jeder beliebigen Aufgabe springen!</p>
+                <ul>
+                    <li><strong>Weiße Kreise:</strong> Noch nicht bearbeitet</li>
+                    <li><strong>Bunte Kreise:</strong> Die Aufgabe, an der du gerade arbeitest</li>
+                    <li><strong>Grüne Kreise:</strong> Schon richtig gelöst!</li>
+                </ul>
+                <p>Mit den Pfeilen links und rechts kannst du auch zur vorherigen oder nächsten Aufgabe gehen.</p>
+
                 <h3>✏️ Aufgaben lösen</h3>
                 <p>Lies die Aufgabe genau durch und tippe deine Antwort in das große Eingabefeld. Klicke dann auf "Antwort prüfen" oder drücke die Enter-Taste.</p>
-                <p>Bei richtiger Antwort bekommst du Punkte und kommst automatisch zur nächsten Aufgabe. Bei falscher Antwort kannst du es einfach noch einmal versuchen!</p>
+                <p>Bei richtiger Antwort bekommst du Punkte und die Aufgabe wird grün markiert. Bei falscher Antwort kannst du es einfach noch einmal versuchen!</p>
 
-                <h3>💡 Hilfen nutzen</h3>
-                <p><strong>Tipp-Button (gelb):</strong> Zeigt dir nacheinander zwei hilfreiche Hinweise, die dich zum Lösungsweg führen.</p>
-                <p><strong>Lösung zeigen (rot):</strong> Zeigt dir den kompletten Rechenweg, wenn du gar nicht weiterkommst.</p>
-                <p><em>Tipp:</em> Versuche zuerst die Aufgabe alleine zu lösen, dann mit den Tipps. Die Lösung solltest du nur als letzte Hilfe nutzen!</p>
+                <h3>💡 Die zwei Hilfe-Blasen</h3>
+                <p>Über der Lösung siehst du zwei große runde Blasen mit Glühbirnen:</p>
+                <ul>
+                    <li><strong>Erste Blase (Tipp 1):</strong> Klicke drauf für den ersten Hinweis</li>
+                    <li><strong>Zweite Blase (Tipp 2):</strong> Wird aktiv, wenn du Tipp 1 benutzt hast</li>
+                </ul>
+                <p>Die Blasen werden gelb, wenn du sie benutzt hast. So siehst du immer, wie viele Tipps du schon verwendet hast.</p>
+                <p><em>Wichtig:</em> Versuche zuerst ohne Tipps! Dann gibt es mehr Punkte!</p>
 
                 <h3>⭐ Punkte sammeln</h3>
                 <p>So bekommst du Punkte:</p>
@@ -611,8 +667,8 @@
                     <li>Lies die Aufgabe zweimal, bevor du anfängst zu rechnen</li>
                     <li>Nutze Zettel und Stift für Nebenrechnungen</li>
                     <li>Die Tipps helfen dir, selbst auf die Lösung zu kommen</li>
+                    <li>Du kannst jederzeit zu anderen Aufgaben springen</li>
                     <li>Mach Pausen zwischen den Themen</li>
-                    <li>Du kannst jedes Thema so oft wiederholen, wie du möchtest</li>
                 </ul>
             </div>
 
@@ -627,7 +683,6 @@
     <script>
         let previousScreen = 'start-screen';
 
-        // Hilfe ein/ausblenden
         function toggleHelp() {
             const helpScreen = document.querySelector('.help-screen');
             const activeScreen = document.querySelector('.start-screen.active, .game-screen.active, .complete-screen.active');
@@ -652,7 +707,7 @@
 
         // Aufgaben-Datenbank
         const tasks = {
-            1: [ // Themenbereich 1: Sachaufgaben
+            1: [
                 {
                     text: "Auf einem Bauernhof leben insgesamt 24 Tiere (Hunde und Katzen). Es gibt dreimal so viele Katzen wie Hunde. Wie viele Hunde gibt es?",
                     answer: "6",
@@ -717,7 +772,7 @@
                     solution: "Paul hat 10 Sticker, Max hat 70."
                 }
             ],
-            2: [ // Themenbereich 2: Geschwindigkeit, Zeit und Strecke
+            2: [
                 {
                     text: "Mia fährt mit ihrem Roller. Sie schafft in einer Minute 150 Meter. Wie weit fährt sie in 4 Minuten?",
                     answer: "600",
@@ -782,7 +837,7 @@
                     solution: "4 mal 100 Meter sind 400 Meter."
                 }
             ],
-            3: [ // Themenbereich 3: Entfernungen und Treffpunkte
+            3: [
                 {
                     text: "Emma und Ben wohnen 4000 Meter voneinander entfernt. Sie wollen sich treffen und gehen gleichzeitig los. Emma schafft 90 m pro Minute, Ben schafft 110 m pro Minute. Nach wie vielen Minuten treffen sie sich?",
                     answer: "20",
@@ -840,6 +895,12 @@
             ]
         };
 
+        const categoryNames = {
+            1: "Wer hat wie viel?",
+            2: "Geschwindigkeit",
+            3: "Treffpunkte"
+        };
+
         // Spielstand
         let gameState = {
             currentCategory: 1,
@@ -849,10 +910,10 @@
             level: 1,
             hintsUsed: 0,
             solutionShown: false,
-            achievements: []
+            achievements: [],
+            completedTasks: {}
         };
 
-        // Spielstand aus localStorage laden
         function loadGameState() {
             const saved = localStorage.getItem('mathGameState');
             if (saved) {
@@ -863,7 +924,6 @@
             }
         }
 
-        // Spielstand speichern
         function saveGameState() {
             localStorage.setItem('mathGameState', JSON.stringify({
                 points: gameState.points,
@@ -872,22 +932,78 @@
             }));
         }
 
-        // Kategorie starten
         function startCategory(category) {
             gameState.currentCategory = category;
             gameState.currentTask = 0;
             gameState.correctAnswers = 0;
-            gameState.hintsUsed = 0;
-            gameState.solutionShown = false;
+            gameState.completedTasks = {};
 
             document.querySelector('.start-screen').classList.remove('active');
             document.querySelector('.game-screen').classList.add('active');
 
+            document.getElementById('category-name').textContent = categoryNames[category];
+            
+            createTaskNavigation();
             updateUI();
             loadTask();
         }
 
-        // Aufgabe laden
+        function createTaskNavigation() {
+            const nav = document.getElementById('task-navigation');
+            const categoryTasks = tasks[gameState.currentCategory];
+            
+            let html = '<button class="nav-arrow" onclick="prevTask()" id="prev-arrow">◀</button>';
+            
+            for (let i = 0; i < categoryTasks.length; i++) {
+                html += `<button class="task-nav-button" onclick="jumpToTask(${i})" id="nav-btn-${i}">${i + 1}</button>`;
+            }
+            
+            html += '<button class="nav-arrow" onclick="nextTask()" id="next-arrow">▶</button>';
+            
+            nav.innerHTML = html;
+            updateTaskNavigation();
+        }
+
+        function updateTaskNavigation() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            
+            // Update buttons
+            for (let i = 0; i < categoryTasks.length; i++) {
+                const btn = document.getElementById(`nav-btn-${i}`);
+                btn.classList.remove('active', 'completed');
+                
+                if (i === gameState.currentTask) {
+                    btn.classList.add('active');
+                } else if (gameState.completedTasks[i]) {
+                    btn.classList.add('completed');
+                }
+            }
+            
+            // Update arrows
+            document.getElementById('prev-arrow').disabled = gameState.currentTask === 0;
+            document.getElementById('next-arrow').disabled = gameState.currentTask === categoryTasks.length - 1;
+        }
+
+        function jumpToTask(index) {
+            gameState.currentTask = index;
+            loadTask();
+        }
+
+        function prevTask() {
+            if (gameState.currentTask > 0) {
+                gameState.currentTask--;
+                loadTask();
+            }
+        }
+
+        function nextTask() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            if (gameState.currentTask < categoryTasks.length - 1) {
+                gameState.currentTask++;
+                loadTask();
+            }
+        }
+
         function loadTask() {
             const categoryTasks = tasks[gameState.currentCategory];
             const task = categoryTasks[gameState.currentTask];
@@ -903,11 +1019,57 @@
             gameState.hintsUsed = 0;
             gameState.solutionShown = false;
 
-            updateHintButton();
-            updateProgress();
+            createHintBubbles();
+            updateTaskNavigation();
+            window.scrollTo(0, 0);
         }
 
-        // Antwort prüfen
+        function createHintBubbles() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            const container = document.getElementById('hint-bubbles');
+            
+            let html = '';
+            for (let i = 0; i < task.hints.length; i++) {
+                const isLocked = i > 0 && gameState.hintsUsed < i;
+                const isUsed = i < gameState.hintsUsed;
+                const classes = `hint-bubble ${isUsed ? 'used' : ''} ${isLocked ? 'locked' : ''}`;
+                
+                html += `
+                    <div class="${classes}" onclick="showHint(${i})" id="hint-bubble-${i}">
+                        <div class="hint-bubble-icon">${isUsed ? '✓' : '💡'}</div>
+                        <div class="hint-bubble-label">Tipp ${i + 1}</div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function showHint(index) {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            
+            // Prüfen ob dieser Tipp verfügbar ist
+            if (index > gameState.hintsUsed) {
+                return; // Noch nicht verfügbar
+            }
+            
+            if (index === gameState.hintsUsed) {
+                // Neuen Tipp zeigen
+                const hintBox = document.getElementById('hint-box');
+                hintBox.innerHTML = `<strong>💡 Tipp ${index + 1}:</strong> ${task.hints[index]}`;
+                hintBox.classList.add('show');
+                gameState.hintsUsed++;
+                createHintBubbles();
+            } else {
+                // Bereits angezeigten Tipp nochmal zeigen
+                const hintBox = document.getElementById('hint-box');
+                hintBox.innerHTML = `<strong>💡 Tipp ${index + 1}:</strong> ${task.hints[index]}`;
+                hintBox.classList.add('show');
+            }
+        }
+
         function checkAnswer() {
             const userAnswer = document.getElementById('answer-input').value.trim();
             const categoryTasks = tasks[gameState.currentCategory];
@@ -919,67 +1081,46 @@
                 return;
             }
 
-            // Antwort normalisieren (Komma zu Punkt)
             const normalizedAnswer = userAnswer.replace(',', '.');
             const correctAnswer = task.answer;
 
             if (normalizedAnswer === correctAnswer) {
-                // Richtige Antwort
                 let earnedPoints = 10;
 
-                // Bonus für keine Tipps
                 if (gameState.hintsUsed === 0) {
                     earnedPoints += 5;
                 }
 
-                // Bonus für keine Lösung
                 if (!gameState.solutionShown) {
                     earnedPoints += 5;
                 }
 
                 gameState.points += earnedPoints;
                 gameState.correctAnswers++;
+                gameState.completedTasks[gameState.currentTask] = true;
 
                 feedback.textContent = `🎉 Super! Das ist richtig! Du bekommst ${earnedPoints} Punkte!`;
                 feedback.classList.add('correct');
                 feedback.style.display = 'block';
 
-                // Punkte-Animation
                 updateUI();
+                updateTaskNavigation();
                 saveGameState();
 
-                // Nächste Aufgabe oder Abschluss
                 setTimeout(() => {
-                    gameState.currentTask++;
-                    if (gameState.currentTask < categoryTasks.length) {
-                        loadTask();
-                    } else {
-                        completeCategory();
-                    }
+                    feedback.style.display = 'none';
                 }, 2000);
             } else {
-                // Falsche Antwort
                 feedback.textContent = '❌ Das ist leider nicht richtig. Versuch es noch einmal!';
                 feedback.classList.add('incorrect');
                 feedback.style.display = 'block';
+
+                setTimeout(() => {
+                    feedback.classList.remove('incorrect');
+                }, 1000);
             }
         }
 
-        // Tipp zeigen
-        function showHint() {
-            const categoryTasks = tasks[gameState.currentCategory];
-            const task = categoryTasks[gameState.currentTask];
-            const hintBox = document.getElementById('hint-box');
-
-            if (gameState.hintsUsed < task.hints.length) {
-                hintBox.innerHTML = `<strong>💡 Tipp ${gameState.hintsUsed + 1}:</strong> ${task.hints[gameState.hintsUsed]}`;
-                hintBox.classList.add('show');
-                gameState.hintsUsed++;
-                updateHintButton();
-            }
-        }
-
-        // Lösung zeigen
         function showSolution() {
             const categoryTasks = tasks[gameState.currentCategory];
             const task = categoryTasks[gameState.currentTask];
@@ -990,43 +1131,19 @@
             gameState.solutionShown = true;
         }
 
-        // Tipp-Button aktualisieren
-        function updateHintButton() {
-            const categoryTasks = tasks[gameState.currentCategory];
-            const task = categoryTasks[gameState.currentTask];
-            const hintsLeft = task.hints.length - gameState.hintsUsed;
-            document.getElementById('hint-count').textContent = `(${hintsLeft})`;
-        }
-
-        // Fortschritt aktualisieren
-        function updateProgress() {
-            const categoryTasks = tasks[gameState.currentCategory];
-            const progress = ((gameState.currentTask + 1) / categoryTasks.length) * 100;
-            document.getElementById('progress').style.width = progress + '%';
-            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
-        }
-
-        // UI aktualisieren
         function updateUI() {
             document.getElementById('points').textContent = gameState.points;
             document.getElementById('correct').textContent = gameState.correctAnswers;
             document.getElementById('level').textContent = gameState.level;
-            
-            const categoryTasks = tasks[gameState.currentCategory];
-            document.getElementById('current-task').textContent = gameState.currentTask + 1;
-            document.getElementById('total-tasks').textContent = categoryTasks.length;
         }
 
-        // Kategorie abschließen
         function completeCategory() {
-            // Level-Up prüfen
             const pointsForNextLevel = gameState.level * 100;
             if (gameState.points >= pointsForNextLevel) {
                 gameState.level++;
                 addAchievement('🏆 Level-Up!', `Du hast Level ${gameState.level} erreicht!`);
             }
 
-            // Besondere Erfolge
             const categoryTasks = tasks[gameState.currentCategory];
             if (gameState.correctAnswers === categoryTasks.length) {
                 addAchievement('⭐ Perfekt!', 'Alle Aufgaben richtig gelöst!');
@@ -1034,7 +1151,6 @@
 
             saveGameState();
 
-            // Abschluss-Bildschirm
             document.querySelector('.game-screen').classList.remove('active');
             document.querySelector('.complete-screen').classList.add('active');
 
@@ -1042,23 +1158,19 @@
             document.getElementById('final-correct').textContent = gameState.correctAnswers;
             document.getElementById('final-level').textContent = gameState.level;
 
-            // Sterne berechnen
             const percentage = (gameState.correctAnswers / categoryTasks.length) * 100;
             let stars = '⭐';
             if (percentage >= 50) stars = '⭐⭐';
             if (percentage >= 80) stars = '⭐⭐⭐';
             document.getElementById('final-stars').textContent = stars;
 
-            // Erfolge anzeigen
             displayAchievements();
         }
 
-        // Erfolg hinzufügen
         function addAchievement(title, description) {
             gameState.achievements.push({ title, description, timestamp: Date.now() });
         }
 
-        // Erfolge anzeigen
         function displayAchievements() {
             const container = document.getElementById('achievements-container');
             container.innerHTML = '<h3 style="color: #764ba2; margin-bottom: 15px;">🎖️ Erfolge</h3>';
@@ -1068,7 +1180,6 @@
                 return;
             }
 
-            // Nur die neuesten 5 Erfolge zeigen
             const recentAchievements = gameState.achievements.slice(-5).reverse();
             recentAchievements.forEach(achievement => {
                 container.innerHTML += `
@@ -1083,14 +1194,12 @@
             });
         }
 
-        // Zurück zum Menü
         function backToMenu() {
             document.querySelector('.game-screen').classList.remove('active');
             document.querySelector('.complete-screen').classList.remove('active');
             document.querySelector('.start-screen').classList.add('active');
         }
 
-        // Beim Laden
         loadGameState();
         updateUI();
     </script>
