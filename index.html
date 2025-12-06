@@ -482,6 +482,21 @@
                 </p>
             </div>
 
+            <div class="stats-bar" style="margin: 30px 0;">
+                <div class="stat">
+                    <div class="stat-label">Deine Punkte</div>
+                    <div class="stat-value">⭐ <span id="start-points">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Dein Level</div>
+                    <div class="stat-value">🏆 <span id="start-level">1</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Gelöste Aufgaben</div>
+                    <div class="stat-value">✓ <span id="start-solved">0</span></div>
+                </div>
+            </div>
+
             <div style="text-align: center; margin: 30px 0; font-size: 120px; line-height: 1;">
                 😊
             </div>
@@ -907,11 +922,13 @@
             currentTask: 0,
             points: 0,
             correctAnswers: 0,
+            totalSolvedTasks: 0,
             level: 1,
             hintsUsed: 0,
             solutionShown: false,
             achievements: [],
-            completedTasks: {}
+            completedTasks: {},
+            solvedTasksPerCategory: {1: [], 2: [], 3: []}
         };
 
         function loadGameState() {
@@ -921,15 +938,27 @@
                 gameState.points = loaded.points || 0;
                 gameState.level = loaded.level || 1;
                 gameState.achievements = loaded.achievements || [];
+                gameState.totalSolvedTasks = loaded.totalSolvedTasks || 0;
+                gameState.solvedTasksPerCategory = loaded.solvedTasksPerCategory || {1: [], 2: [], 3: []};
             }
+            updateStartScreen();
         }
 
         function saveGameState() {
             localStorage.setItem('mathGameState', JSON.stringify({
                 points: gameState.points,
                 level: gameState.level,
-                achievements: gameState.achievements
+                achievements: gameState.achievements,
+                totalSolvedTasks: gameState.totalSolvedTasks,
+                solvedTasksPerCategory: gameState.solvedTasksPerCategory
             }));
+            updateStartScreen();
+        }
+
+        function updateStartScreen() {
+            document.getElementById('start-points').textContent = gameState.points;
+            document.getElementById('start-level').textContent = gameState.level;
+            document.getElementById('start-solved').textContent = gameState.totalSolvedTasks;
         }
 
         function startCategory(category) {
@@ -937,6 +966,13 @@
             gameState.currentTask = 0;
             gameState.correctAnswers = 0;
             gameState.completedTasks = {};
+            
+            // Bereits gelöste Aufgaben in dieser Kategorie markieren
+            if (gameState.solvedTasksPerCategory[category]) {
+                gameState.solvedTasksPerCategory[category].forEach(taskIndex => {
+                    gameState.completedTasks[taskIndex] = true;
+                });
+            }
 
             document.querySelector('.start-screen').classList.remove('active');
             document.querySelector('.game-screen').classList.add('active');
@@ -1093,6 +1129,18 @@
 
                 if (!gameState.solutionShown) {
                     earnedPoints += 5;
+                }
+
+                // Prüfen ob diese Aufgabe neu gelöst wurde
+                const taskId = `${gameState.currentCategory}-${gameState.currentTask}`;
+                const isNewSolution = !gameState.completedTasks[gameState.currentTask];
+                
+                if (isNewSolution) {
+                    // Nur bei erster Lösung die Gesamtzahl erhöhen
+                    if (!gameState.solvedTasksPerCategory[gameState.currentCategory].includes(gameState.currentTask)) {
+                        gameState.solvedTasksPerCategory[gameState.currentCategory].push(gameState.currentTask);
+                        gameState.totalSolvedTasks++;
+                    }
                 }
 
                 gameState.points += earnedPoints;
