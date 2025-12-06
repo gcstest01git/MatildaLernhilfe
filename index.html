@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matildas Mathe-Abenteuer 🌟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #764ba2;
+        }
+
+        .header h1 {
+            color: #764ba2;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #d63031;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .task-card {
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .task-number {
+            display: inline-block;
+            background: white;
+            color: #764ba2;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .task-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: white;
+            margin: 15px 0;
+        }
+
+        .input-area {
+            margin: 20px 0;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3em;
+            border: 3px solid white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #fdcb6e;
+            box-shadow: 0 0 15px rgba(253, 203, 110, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+        }
+
+        .btn-hint {
+            background: linear-gradient(135deg, #fdcb6e 0%, #ffeaa7 100%);
+            color: #2d3436;
+        }
+
+        .btn-solution {
+            background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
+            color: white;
+        }
+
+        .hint-box {
+            background: #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #fdcb6e;
+            display: none;
+        }
+
+        .hint-box.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .solution-box {
+            background: #dfe6e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #74b9ff;
+            display: none;
+        }
+
+        .solution-box.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            display: block;
+            animation: bounce 0.5s ease;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #ff7675 0%, #fd79a8 100%);
+            color: white;
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            text-align: center;
+            display: none;
+            z-index: 1000;
+        }
+
+        .celebration.show {
+            display: block;
+            animation: zoomIn 0.5s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: translate(-50%, -50%) scale(0);
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .celebration h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .stars {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .menu-item h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .menu-item p {
+            color: #f0f0f0;
+            font-size: 0.9em;
+        }
+
+        .start-screen, .game-screen, .complete-screen {
+            display: none;
+        }
+
+        .start-screen.active, .game-screen.active, .complete-screen.active {
+            display: block;
+        }
+
+        .achievement {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+        }
+
+        .achievement-text {
+            flex: 1;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .achievement-desc {
+            font-size: 0.9em;
+            color: #636e72;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div class="start-screen active">
+            <div class="header">
+                <h1>🌟 Matildas Mathe-Abenteuer 🌟</h1>
+                <p style="font-size: 1.2em; color: #636e72; margin-top: 10px;">
+                    Hallo Matilda aus Langerringen! Bist du bereit für spannende Rechenaufgaben?
+                </p>
+            </div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='%23764ba2'/%3E%3Ccircle cx='80' cy='85' r='10' fill='white'/%3E%3Ccircle cx='120' cy='85' r='10' fill='white'/%3E%3Cpath d='M 70 120 Q 100 140 130 120' stroke='white' stroke-width='5' fill='none'/%3E%3C/svg%3E" 
+                     alt="Smiley" 
+                     style="width: 150px; height: 150px;">
+            </div>
+
+            <div class="menu">
+                <div class="menu-item" onclick="startCategory(1)">
+                    <h3>📦 Thema 1</h3>
+                    <p>Wer hat wie viel?<br>(7 Aufgaben)</p>
+                </div>
+                <div class="menu-item" onclick="startCategory(2)">
+                    <h3>🚴 Thema 2</h3>
+                    <p>Geschwindigkeit & Zeit<br>(7 Aufgaben)</p>
+                </div>
+                <div class="menu-item" onclick="startCategory(3)">
+                    <h3>🤝 Thema 3</h3>
+                    <p>Treffpunkte & Wege<br>(6 Aufgaben)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="game-screen">
+            <div class="header">
+                <h1>🌟 Mathe-Abenteuer 🌟</h1>
+                <div class="level-badge">Level <span id="level">1</span></div>
+            </div>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-label">Punkte</div>
+                    <div class="stat-value">⭐ <span id="points">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Richtig</div>
+                    <div class="stat-value">✓ <span id="correct">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Aufgabe</div>
+                    <div class="stat-value"><span id="current-task">1</span>/<span id="total-tasks">7</span></div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress">
+                    <span id="progress-text">0%</span>
+                </div>
+            </div>
+
+            <div class="task-card">
+                <span class="task-number">Aufgabe <span id="task-number">1</span></span>
+                <div class="task-text" id="task-text"></div>
+                
+                <div class="input-area">
+                    <input type="text" 
+                           class="answer-input" 
+                           id="answer-input" 
+                           placeholder="Deine Antwort hier eingeben..."
+                           onkeypress="if(event.key === 'Enter') checkAnswer()">
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkAnswer()">
+                        ✓ Antwort prüfen
+                    </button>
+                    <button class="btn btn-hint" onclick="showHint()">
+                        💡 Tipp <span id="hint-count">(2)</span>
+                    </button>
+                </div>
+
+                <div class="hint-box" id="hint-box"></div>
+
+                <div class="feedback" id="feedback"></div>
+
+                <div class="button-group" style="margin-top: 10px;">
+                    <button class="btn btn-solution" onclick="showSolution()" id="solution-btn">
+                        🔍 Lösung zeigen
+                    </button>
+                </div>
+
+                <div class="solution-box" id="solution-box"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="backToMenu()" style="max-width: 300px;">
+                    🏠 Zurück zur Übersicht
+                </button>
+            </div>
+        </div>
+
+        <!-- Complete Screen -->
+        <div class="complete-screen">
+            <div class="header">
+                <h1>🎉 Geschafft! 🎉</h1>
+            </div>
+
+            <div class="stars" id="final-stars">⭐⭐⭐</div>
+
+            <h2 style="text-align: center; color: #764ba2; margin: 20px 0;">
+                Super gemacht, Matilda!
+            </h2>
+
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-label">Gesamtpunkte</div>
+                    <div class="stat-value">⭐ <span id="final-points">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Richtige Antworten</div>
+                    <div class="stat-value">✓ <span id="final-correct">0</span></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Neues Level</div>
+                    <div class="stat-value">🏆 <span id="final-level">1</span></div>
+                </div>
+            </div>
+
+            <div id="achievements-container" style="margin: 30px 0;"></div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" onclick="backToMenu()" style="max-width: 300px;">
+                    🏠 Zurück zur Übersicht
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Aufgaben-Datenbank
+        const tasks = {
+            1: [ // Themenbereich 1: Sachaufgaben
+                {
+                    text: "Auf einem Bauernhof leben insgesamt 24 Tiere (Hunde und Katzen). Es gibt dreimal so viele Katzen wie Hunde. Wie viele Hunde gibt es?",
+                    answer: "6",
+                    hints: [
+                        "Stell dir vor, du hast 1 Kiste für die Hunde und 3 Kisten für die Katzen. Wie viele Kisten sind das zusammen?",
+                        "Teile die Gesamtzahl (24) durch die Anzahl der Kisten (4)."
+                    ],
+                    solution: "24 geteilt durch 4 ist 6. Es sind 6 Hunde und 18 Katzen."
+                },
+                {
+                    text: "Lisa und Hannes sammeln Kastanien. Zusammen haben sie 40 Stück gesammelt. Lisa hat dreimal so viele Kastanien gefunden wie Hannes. Wie viele Kastanien hat Hannes?",
+                    answer: "10",
+                    hints: [
+                        "Hannes hat 1 Teil, Lisa hat 3 Teile. Zusammen sind es 4 Teile.",
+                        "Rechne 40 geteilt durch 4."
+                    ],
+                    solution: "Hannes hat 10 Kastanien, Lisa hat 30 Kastanien."
+                },
+                {
+                    text: "In einer Tüte sind 50 Bonbons. Es sind viermal so viele gelbe wie rote Bonbons. Wie viele rote Bonbons sind in der Tüte?",
+                    answer: "10",
+                    hints: [
+                        "1 Teil rot plus 4 Teile gelb sind 5 Teile insgesamt.",
+                        "Die rote Menge ist ein Fünftel von allem."
+                    ],
+                    solution: "50 geteilt durch 5 ist 10. Es sind 10 rote und 40 gelbe Bonbons."
+                },
+                {
+                    text: "Opa gibt seinen Enkeln Tim und Lena insgesamt 60 Euro Taschengeld. Tim ist älter und bekommt doppelt so viel wie Lena. Wie viel Euro bekommt Lena?",
+                    answer: "20",
+                    hints: [
+                        "Lena bekommt einen Haufen Geld, Tim bekommt zwei Haufen. Zusammen sind es 3 Haufen.",
+                        "Teile die 60 Euro durch 3."
+                    ],
+                    solution: "Lena bekommt 20 Euro, Tim bekommt 40 Euro."
+                },
+                {
+                    text: "In der Klasse 4a sind 28 Kinder. Es sind dreimal so viele Mädchen wie Jungen. Wie viele Jungen sind in der Klasse?",
+                    answer: "7",
+                    hints: [
+                        "Rechne Jungen (1 Teil) plus Mädchen (3 Teile) zusammen.",
+                        "Teile die 28 Kinder durch 4."
+                    ],
+                    solution: "Es sind 7 Jungen und 21 Mädchen."
+                },
+                {
+                    text: "Im Obstkorb liegen 15 Früchte (Äpfel und Birnen). Es sind doppelt so viele Äpfel wie Birnen. Wie viele Birnen liegen im Korb?",
+                    answer: "5",
+                    hints: [
+                        "Denk an Päckchen: 1 Päckchen Birnen, 2 Päckchen Äpfel.",
+                        "15 durch 3 Päckchen teilen."
+                    ],
+                    solution: "Es sind 5 Birnen und 10 Äpfel."
+                },
+                {
+                    text: "Max und Paul tauschen Fußballsticker. Zusammen haben sie 80 Sticker. Max hat siebenmal so viele Sticker wie Paul. Wie viele Sticker hat Paul?",
+                    answer: "10",
+                    hints: [
+                        "Das ist eine große Zahl! 1 Teil für Paul plus 7 Teile für Max sind 8 Teile.",
+                        "Teile 80 durch 8."
+                    ],
+                    solution: "Paul hat 10 Sticker, Max hat 70."
+                }
+            ],
+            2: [ // Themenbereich 2: Geschwindigkeit, Zeit und Strecke
+                {
+                    text: "Mia fährt mit ihrem Roller. Sie schafft in einer Minute 150 Meter. Wie weit fährt sie in 4 Minuten?",
+                    answer: "600",
+                    hints: [
+                        "Pro Minute heißt: Nimm den Weg mal die Anzahl der Minuten.",
+                        "Rechne 150 mal 4."
+                    ],
+                    solution: "150 mal 4 ist 600 Meter."
+                },
+                {
+                    text: "Ein Radfahrer fährt gemütlich mit 15 Kilometern pro Stunde. Wie weit kommt er, wenn er 3 Stunden lang fährt?",
+                    answer: "45",
+                    hints: [
+                        "In einer Stunde schafft er 15 km. In der zweiten noch mal 15, in der dritten noch mal 15.",
+                        "Rechne 15 mal 3."
+                    ],
+                    solution: "Er kommt 45 Kilometer weit."
+                },
+                {
+                    text: "Lukas rennt im Sportunterricht. Er läuft sehr gleichmäßig und schafft 200 Meter in einer Minute. Er möchte insgesamt 1000 Meter laufen. Wie viele Minuten braucht er dafür?",
+                    answer: "5",
+                    hints: [
+                        "Wie oft passt die 200 in die 1000?",
+                        "Streiche bei beiden Zahlen zwei Nullen weg (10 geteilt durch 2)."
+                    ],
+                    solution: "Er braucht 5 Minuten."
+                },
+                {
+                    text: "Ein Schnellzug legt in einer Minute 4 Kilometer zurück. Wie viele Kilometer schafft der Zug in einer Viertelstunde (15 Minuten)?",
+                    answer: "60",
+                    hints: [
+                        "Jede Minute kommen 4 km dazu.",
+                        "Du musst 4 mal 15 rechnen. Rechne erst 4 mal 10 und dann 4 mal 5."
+                    ],
+                    solution: "Er schafft 60 Kilometer."
+                },
+                {
+                    text: "Eine Schnecke kriecht im Garten. Sie schafft 2 Meter in 10 Minuten. Wie weit kriecht sie in einer Stunde (60 Minuten)?",
+                    answer: "12",
+                    hints: [
+                        "Wie oft passen die 10 Minuten in eine ganze Stunde (60 Min)? Genau 6 mal.",
+                        "Nimm die Strecke (2 m) also auch mal 6."
+                    ],
+                    solution: "Sie schafft 12 Meter."
+                },
+                {
+                    text: "Frau Müller fährt mit dem Auto auf der Autobahn. Sie fährt konstant 100 km in einer Stunde. Wie weit kommt sie in einer halben Stunde (30 min)?",
+                    answer: "50",
+                    hints: [
+                        "Eine halbe Stunde ist genau die Hälfte einer Stunde.",
+                        "Teile die Strecke durch 2."
+                    ],
+                    solution: "Sie kommt 50 Kilometer weit."
+                },
+                {
+                    text: "Felix schwimmt im Freibad Bahnen. Für 100 Meter braucht er genau 5 Minuten. Wie weit ist er geschwommen, wenn er 20 Minuten lang unterwegs war?",
+                    answer: "400",
+                    hints: [
+                        "Überlege erst: Wie oft passen die 5 Minuten in die 20 Minuten? (4 mal).",
+                        "Dann schafft er auch 4 mal die Strecke."
+                    ],
+                    solution: "4 mal 100 Meter sind 400 Meter."
+                }
+            ],
+            3: [ // Themenbereich 3: Entfernungen und Treffpunkte
+                {
+                    text: "Emma und Ben wohnen 4000 Meter voneinander entfernt. Sie wollen sich treffen und gehen gleichzeitig los. Emma schafft 90 m pro Minute, Ben schafft 110 m pro Minute. Nach wie vielen Minuten treffen sie sich?",
+                    answer: "20",
+                    hints: [
+                        "Wenn sie aufeinander zulaufen, musst du ihre Geschwindigkeiten addieren (zusammenzählen).",
+                        "Teile den Gesamtweg durch den gemeinsamen Weg."
+                    ],
+                    solution: "90 plus 110 sind 200 Meter. 4000 geteilt durch 200 sind 20 Minuten."
+                },
+                {
+                    text: "Zwei Autos starten in zwei Städten, die 100 km voneinander entfernt sind, und fahren aufeinander zu. Auto A fährt 60 km in der Stunde, Auto B fährt 40 km in der Stunde. Nach wie vielen Stunden treffen sie sich?",
+                    answer: "1",
+                    hints: [
+                        "Wie viele Kilometer schaffen beide zusammen in einer Stunde? (60 plus 40).",
+                        "Schau, wie oft dieser gemeinsame Weg in die Gesamtstrecke (100 km) passt."
+                    ],
+                    solution: "Zusammen 100 km pro Stunde. Sie brauchen genau 1 Stunde."
+                },
+                {
+                    text: "Leon und sein Papa fahren sich mit dem Fahrrad entgegen. Der Abstand beträgt 20 km. Leon fährt 12 km pro Stunde, sein Papa fährt 8 km pro Stunde. Nach wie vielen Stunden treffen sie sich?",
+                    answer: "1",
+                    hints: [
+                        "Addiere wieder die Geschwindigkeiten: 12 plus 8.",
+                        "Zusammen schaffen sie 20 km pro Stunde."
+                    ],
+                    solution: "Zusammen 20 km pro Stunde. Sie treffen sich nach 1 Stunde."
+                },
+                {
+                    text: "Auf dem Schulhof stehen Sina und Marie 300 Meter auseinander. Sie rennen aufeinander zu. Sina schafft 4 m pro Sekunde, Marie schafft 6 m pro Sekunde. Wie viele Sekunden dauert es, bis sie sich treffen?",
+                    answer: "30",
+                    hints: [
+                        "Gemeinsam schaffen sie 4 plus 6 Meter pro Sekunde.",
+                        "Teile die 300 Meter durch das Ergebnis von Tipp 1."
+                    ],
+                    solution: "Zusammen 10 Meter pro Sekunde. 300 geteilt durch 10 sind 30 Sekunden."
+                },
+                {
+                    text: "Zwei Wanderer laufen auf einem 12 km langen Weg aufeinander zu. Beide laufen genau gleich schnell: 4 km pro Stunde. Nach wie vielen Stunden treffen sie sich? (Hinweis: Sie teilen sich den Weg genau in der Mitte!)",
+                    answer: "1.5",
+                    hints: [
+                        "Beide sind gleich schnell. Sie treffen sich also genau in der Mitte.",
+                        "Was ist die Hälfte von 12 km? Jeder läuft 6 km. Wie lange brauchen sie dafür bei 4 km pro Stunde?"
+                    ],
+                    solution: "Jeder läuft 6 km. Bei 4 km pro Stunde brauchen sie 1,5 Stunden (1 Stunde 30 Minuten)."
+                },
+                {
+                    text: "Ein Hund und sein Herrchen laufen aufeinander zu. Sie sind 600 Meter voneinander entfernt. Das Herrchen geht 80 Meter pro Minute, der Hund rennt 120 Meter pro Minute. Nach wie vielen Minuten erreicht der Hund sein Herrchen?",
+                    answer: "3",
+                    hints: [
+                        "Zähle 80 und 120 zusammen.",
+                        "Wie oft passt das Ergebnis in die 600 Meter?"
+                    ],
+                    solution: "Zusammen 200 Meter pro Minute. 600 geteilt durch 200 sind 3 Minuten."
+                }
+            ]
+        };
+
+        // Spielstand
+        let gameState = {
+            currentCategory: 1,
+            currentTask: 0,
+            points: 0,
+            correctAnswers: 0,
+            level: 1,
+            hintsUsed: 0,
+            solutionShown: false,
+            achievements: []
+        };
+
+        // Spielstand aus localStorage laden
+        function loadGameState() {
+            const saved = localStorage.getItem('mathGameState');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameState.points = loaded.points || 0;
+                gameState.level = loaded.level || 1;
+                gameState.achievements = loaded.achievements || [];
+            }
+        }
+
+        // Spielstand speichern
+        function saveGameState() {
+            localStorage.setItem('mathGameState', JSON.stringify({
+                points: gameState.points,
+                level: gameState.level,
+                achievements: gameState.achievements
+            }));
+        }
+
+        // Kategorie starten
+        function startCategory(category) {
+            gameState.currentCategory = category;
+            gameState.currentTask = 0;
+            gameState.correctAnswers = 0;
+            gameState.hintsUsed = 0;
+            gameState.solutionShown = false;
+
+            document.querySelector('.start-screen').classList.remove('active');
+            document.querySelector('.game-screen').classList.add('active');
+
+            updateUI();
+            loadTask();
+        }
+
+        // Aufgabe laden
+        function loadTask() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+
+            document.getElementById('task-number').textContent = gameState.currentTask + 1;
+            document.getElementById('task-text').textContent = task.text;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('hint-box').classList.remove('show');
+            document.getElementById('solution-box').classList.remove('show');
+            document.getElementById('feedback').classList.remove('correct', 'incorrect');
+            document.getElementById('feedback').style.display = 'none';
+
+            gameState.hintsUsed = 0;
+            gameState.solutionShown = false;
+
+            updateHintButton();
+            updateProgress();
+        }
+
+        // Antwort prüfen
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer-input').value.trim();
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            const feedback = document.getElementById('feedback');
+
+            if (!userAnswer) {
+                alert('Bitte gib eine Antwort ein!');
+                return;
+            }
+
+            // Antwort normalisieren (Komma zu Punkt)
+            const normalizedAnswer = userAnswer.replace(',', '.');
+            const correctAnswer = task.answer;
+
+            if (normalizedAnswer === correctAnswer) {
+                // Richtige Antwort
+                let earnedPoints = 10;
+
+                // Bonus für keine Tipps
+                if (gameState.hintsUsed === 0) {
+                    earnedPoints += 5;
+                }
+
+                // Bonus für keine Lösung
+                if (!gameState.solutionShown) {
+                    earnedPoints += 5;
+                }
+
+                gameState.points += earnedPoints;
+                gameState.correctAnswers++;
+
+                feedback.textContent = `🎉 Super! Das ist richtig! Du bekommst ${earnedPoints} Punkte!`;
+                feedback.classList.add('correct');
+                feedback.style.display = 'block';
+
+                // Punkte-Animation
+                updateUI();
+                saveGameState();
+
+                // Nächste Aufgabe oder Abschluss
+                setTimeout(() => {
+                    gameState.currentTask++;
+                    if (gameState.currentTask < categoryTasks.length) {
+                        loadTask();
+                    } else {
+                        completeCategory();
+                    }
+                }, 2000);
+            } else {
+                // Falsche Antwort
+                feedback.textContent = '❌ Das ist leider nicht richtig. Versuch es noch einmal!';
+                feedback.classList.add('incorrect');
+                feedback.style.display = 'block';
+            }
+        }
+
+        // Tipp zeigen
+        function showHint() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            const hintBox = document.getElementById('hint-box');
+
+            if (gameState.hintsUsed < task.hints.length) {
+                hintBox.innerHTML = `<strong>💡 Tipp ${gameState.hintsUsed + 1}:</strong> ${task.hints[gameState.hintsUsed]}`;
+                hintBox.classList.add('show');
+                gameState.hintsUsed++;
+                updateHintButton();
+            }
+        }
+
+        // Lösung zeigen
+        function showSolution() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            const solutionBox = document.getElementById('solution-box');
+
+            solutionBox.innerHTML = `<strong>🔍 Lösung:</strong> ${task.solution}`;
+            solutionBox.classList.add('show');
+            gameState.solutionShown = true;
+        }
+
+        // Tipp-Button aktualisieren
+        function updateHintButton() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const task = categoryTasks[gameState.currentTask];
+            const hintsLeft = task.hints.length - gameState.hintsUsed;
+            document.getElementById('hint-count').textContent = `(${hintsLeft})`;
+        }
+
+        // Fortschritt aktualisieren
+        function updateProgress() {
+            const categoryTasks = tasks[gameState.currentCategory];
+            const progress = ((gameState.currentTask + 1) / categoryTasks.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = Math.round(progress) + '%';
+        }
+
+        // UI aktualisieren
+        function updateUI() {
+            document.getElementById('points').textContent = gameState.points;
+            document.getElementById('correct').textContent = gameState.correctAnswers;
+            document.getElementById('level').textContent = gameState.level;
+            
+            const categoryTasks = tasks[gameState.currentCategory];
+            document.getElementById('current-task').textContent = gameState.currentTask + 1;
+            document.getElementById('total-tasks').textContent = categoryTasks.length;
+        }
+
+        // Kategorie abschließen
+        function completeCategory() {
+            // Level-Up prüfen
+            const pointsForNextLevel = gameState.level * 100;
+            if (gameState.points >= pointsForNextLevel) {
+                gameState.level++;
+                addAchievement('🏆 Level-Up!', `Du hast Level ${gameState.level} erreicht!`);
+            }
+
+            // Besondere Erfolge
+            const categoryTasks = tasks[gameState.currentCategory];
+            if (gameState.correctAnswers === categoryTasks.length) {
+                addAchievement('⭐ Perfekt!', 'Alle Aufgaben richtig gelöst!');
+            }
+
+            saveGameState();
+
+            // Abschluss-Bildschirm
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.complete-screen').classList.add('active');
+
+            document.getElementById('final-points').textContent = gameState.points;
+            document.getElementById('final-correct').textContent = gameState.correctAnswers;
+            document.getElementById('final-level').textContent = gameState.level;
+
+            // Sterne berechnen
+            const percentage = (gameState.correctAnswers / categoryTasks.length) * 100;
+            let stars = '⭐';
+            if (percentage >= 50) stars = '⭐⭐';
+            if (percentage >= 80) stars = '⭐⭐⭐';
+            document.getElementById('final-stars').textContent = stars;
+
+            // Erfolge anzeigen
+            displayAchievements();
+        }
+
+        // Erfolg hinzufügen
+        function addAchievement(title, description) {
+            gameState.achievements.push({ title, description, timestamp: Date.now() });
+        }
+
+        // Erfolge anzeigen
+        function displayAchievements() {
+            const container = document.getElementById('achievements-container');
+            container.innerHTML = '<h3 style="color: #764ba2; margin-bottom: 15px;">🎖️ Erfolge</h3>';
+
+            if (gameState.achievements.length === 0) {
+                container.innerHTML += '<p style="text-align: center; color: #636e72;">Noch keine Erfolge. Weitermachen!</p>';
+                return;
+            }
+
+            // Nur die neuesten 5 Erfolge zeigen
+            const recentAchievements = gameState.achievements.slice(-5).reverse();
+            recentAchievements.forEach(achievement => {
+                container.innerHTML += `
+                    <div class="achievement">
+                        <div class="achievement-icon">🏅</div>
+                        <div class="achievement-text">
+                            <div class="achievement-title">${achievement.title}</div>
+                            <div class="achievement-desc">${achievement.description}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Zurück zum Menü
+        function backToMenu() {
+            document.querySelector('.game-screen').classList.remove('active');
+            document.querySelector('.complete-screen').classList.remove('active');
+            document.querySelector('.start-screen').classList.add('active');
+        }
+
+        // Beim Laden
+        loadGameState();
+        updateUI();
+    </script>
+</body>
+</html>
